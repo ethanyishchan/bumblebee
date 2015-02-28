@@ -1,6 +1,11 @@
 import pickle
 import subprocess
 from datetime import datetime
+import shlex
+import os
+import shutil
+
+
 
 # read data
 output = open('output_memo.txt', 'rb')
@@ -16,9 +21,10 @@ def return_intervals(s,f_mov_name):
 
 	return array
 
-s = "seminar terminal demolition"
+s = "headquarters organization demolition"
 array = return_intervals (s, "FightClub/FightClub.mp4")
 print array
+print " "
 
 def get_duration(time_interval):
 	start,end = time_interval
@@ -28,47 +34,47 @@ def get_duration(time_interval):
 
 def splice_move (a, f_mov_name):
 
+	shutil.rmtree('spliced_videos')
+	# os.removedirs("")
+	os.makedirs("spliced_videos")
+
 	command_array = []
 	splice_count = 0
+	fnamelist = []
 	for i in range(0,len(a)):
 		splice = a[i]
-		f_name = "splice_" + str(i) + ".mp4"
+		f_name = "spliced_videos/splice_" + str(i) + ".mp4"
+		fnamelist.append("file " + f_name)
 		interval = splice[1]
 		duration = get_duration(interval)
-		command = ["ffmpeg", "-ss", interval[0], "-i", f_mov_name, "-acodec", "copy",  "-t", str(duration), f_name]
-		command_array.append(command)
+		# command = ["ffmpeg", "-ss", interval[0], "-i", f_mov_name, "-acodec", "copy",  "-t", str(duration), "-avoid_negative_ts", str(1),f_name]
+		command = ["ffmpeg", "-ss", interval[0], "-i", f_mov_name,  "-t", str(duration), f_name]		
 		# print command_array[i]
-		cmd  = (" ").join(command_array[i])
+		cmd  = (" ").join(command)
 		print cmd
+		# print command
 
-	merge_command = ["mencoder", "-forceidx", "-ovc", "copy", "-oac", "pcm", "-o", "fuck_yea_1.mp4", "splice_0.mp4", "splice_1.mp4"]
+		cmd = "/usr/local/bin/" + cmd
+		command_array.append(cmd)
 
+	for c in command_array:
+		subprocess.call(c, shell = True)
 
-	# import os.path
-	# print os.path.isfile("FightClub/FightClub.mp4") 
+	#generate a list of filepaths
+	f_name_file = open('fnamelist.txt', 'wb')
+	f_name_file.write( ("\n").join(fnamelist) )
+	f_name_file.close() 
 
-	# print command_array[0]
-	# cmd  = (" ").join(command_array[0])
-	# print cmd
-	# subprocess.call(command_array[0])
-	# subprocess.call(command_array[1])
-	# subprocess.call(merge_command)
+	os.remove("output/concat_output.mp4")
+	concat_cmd = "/usr/local/bin/ffmpeg -f concat -i fnamelist.txt -c copy output/concat_output.mp4"
+
+	subprocess.call(concat_cmd, shell = True)
+
+	# alias vlc='/Applications/VLC.app/Contents/MacOS/VLC'
+	# subprocess.call("alias vlc='/Applications/VLC.app/Contents/MacOS/VLC'", shell = True)
+	# subprocess.call("")
+	subprocess.call("/Applications/VLC.app/Contents/MacOS/VLC output/concat_output.mp4", shell = True)
 
 splice_move(array, "FightClub/FightClub.mp4")
-# ffmpeg_command1 = ["ffmpeg", "-i", "/home/xincoz/test/connect.webm", "-acodec", "copy", "-ss", "00:00:00", "-t", "00:00:30", "/home/xincoz/test/output1.webm"]
-# ffmpeg_command2 = ["ffmpeg", "-i", "/home/xincoz/test/connect.webm", "-acodec", "copy", "-ss", "00:00:30", "-t", "00:00:30", "/home/xincoz/test/output2.webm"]
-# ffmpeg_command3 = ["mencoder", "-forceidx", "-ovc", "copy", "-oac", "pcm", "-o", "/home/xincoz/test/output.webm", "/home/xincoz/test/output1.webm", "/home/xincoz/test/output2.webm"]
 
-# ffmpeg -i input.flv -ss 15 -t 60 -acodec copy -vcodec copy output.flv
-
-
-# ffmpeg -i FightClub.mp4 -acodec copy -ss 02:15:30 -t 00:00:02 outfile_1.mp4
-# ffmpeg -i FightClub.mp4 -acodec copy -ss 00:02:26.013 -t 00:00:02.100 outfile_2.mp4
-# mencoder -forceidx -ovc copy -oac pcm -o merged_file_1.mp4 outfile_1.mp4 outfile_2.mp4
-
-# ffmpeg -i FightClub.mp4 -ss 15 -t 60 -acodec copy -vcodec copy FightClub2_spliced.mp4
-
-# subprocess.call(ffmpeg_command1)
-# subprocess.call(ffmpeg_command2)
-# subprocess.Popen(ffmpeg_command3)
 

@@ -7,6 +7,7 @@ import time
 import copy
 import pickle
 import datetime as wtf_time
+import math
 
 # import Cpickle as pickle
 
@@ -50,12 +51,26 @@ def add_time(start, duration):
 	new_time = datetime.strftime(new_time, FMT)
 	return new_time
 
+def weighting_function(n,k=0.05):
+	if n == 1:
+		return 1
+	return n * (1 - math.pow(k,(1/n)))
+
+# print weighting_function(0.05,4)
+
 def onboard(f_sub_name, f_mov_name, memo={}):
 	# memo = {}
 	# print memo
 	f = open (f_sub_name,'r')
 	data = f.read()
 	for a in data.split("\r\n\r\n"):
+		# print a
+		try:
+			if a[0] == str(1):
+				continue
+		except:
+			continue
+
 		if len(a) == 0:
 			return
 		b = a.split("\r\n")
@@ -66,26 +81,38 @@ def onboard(f_sub_name, f_mov_name, memo={}):
 		time_interval = parse_interval(b[1])
 		duration = get_duration(time_interval)
 		phrase = get_language_text(phrase)
-		
+
+
+
+		weighted_sum = 0
 		syllable_sum = 0
 		word_array = []
 		split_phrase = phrase.split(" ")
 		for w in split_phrase:
 			try:
 				temp_syllable = nsyl(w)[0]
-				word_array.append((w,temp_syllable))
+				#weighting function goes in here
+				weighted_syllable = weighting_function(temp_syllable)
+				word_array.append((w,temp_syllable,weighted_syllable))
 				syllable_sum += temp_syllable
+				weighted_sum += weighted_syllable
 			except:
 				continue
-		if syllable_sum == 0:
-			continue
 		
 
-		if "nutcase" in phrase:
-			print "fuck"
-			print phrase
-			print word_array
-			return
+		
+
+		for i in range (0,len(word_array)):
+			word_tuple = word_array[i]
+			word_duration = word_tuple[2]/weighted_sum * duration
+			word_array[i] = word_tuple + (word_duration,)
+
+		if syllable_sum == 0:
+			continue
+		print word_array
+		print weighted_sum
+		break
+		#total weighted score
 
 		syl_interval = duration/syllable_sum
 		syl_curr_count = 0
@@ -100,8 +127,9 @@ def onboard(f_sub_name, f_mov_name, memo={}):
 
 			syl_curr_count += w[1]
 			added_time_intervals = syl_curr_count * syl_interval
+			
+			#this if it is normalized
 			word_end = add_time(time_interval[0], added_time_intervals)
-
 
 			# print w
 			# print "syl sum: ", syllable_sum
@@ -112,16 +140,14 @@ def onboard(f_sub_name, f_mov_name, memo={}):
 			# print "word end: ", word_end		
 
 			word = w[0]
-			word_array[i] = (word, word_start, word_end)
+			word_array[i] = (word, word_start, word_end, w[1])
 			
 			# print len(memo.keys())
 
-			if word == "nutcase":
-				print time_interval[0]
-				print word_start, word_end
-				return
-
-
+			# if word == "nutcase":
+			# 	print time_interval[0]
+			# 	print word_start, word_end
+			# 	return
 
 			if word in memo:
 				# print word
@@ -133,6 +159,8 @@ def onboard(f_sub_name, f_mov_name, memo={}):
 				memo[word] = temp_array
 			else:
 				memo[word] = [(word_start,word_end)]
+
+
 		# print memo
 		# print time_interval, duration, word_array, syllable_sum
 	# print memo
