@@ -8,6 +8,7 @@ import copy
 import pickle
 import datetime as wtf_time
 import math
+import os
 
 # import Cpickle as pickle
 
@@ -51,38 +52,29 @@ def add_time(start, duration):
 	new_time = datetime.strftime(new_time, FMT)
 	return new_time
 
-def weighting_function(n,k=0.05):
-	if n == 1:
-		return 1
+def weighting_function(n,k=0.00):
 	return n * (1 - math.pow(k,(1/n)))
 
 # print weighting_function(0.05,4)
 
 def onboard(f_sub_name, f_mov_name, memo={}):
-	# memo = {}
-	# print memo
+
 	f = open (f_sub_name,'r')
 	data = f.read()
-	for a in data.split("\r\n\r\n"):
-		# print a
-		try:
-			if a[0] == str(1):
-				continue
-		except:
-			continue
-
+	for a in data.split("\r\n\r\n")[1:]:
 		if len(a) == 0:
 			return
 		b = a.split("\r\n")
+
 		phrase = ""
 		for i in range (2,len(b)):
 			phrase += " " + b[i]
-
-		time_interval = parse_interval(b[1])
+		try:
+			time_interval = parse_interval(b[1])
+		except:
+			continue
 		duration = get_duration(time_interval)
 		phrase = get_language_text(phrase)
-
-
 
 		weighted_sum = 0
 		syllable_sum = 0
@@ -99,81 +91,64 @@ def onboard(f_sub_name, f_mov_name, memo={}):
 			except:
 				continue
 		
-
-		
-
+		#calculate the normalized weight, including the function
 		for i in range (0,len(word_array)):
 			word_tuple = word_array[i]
 			word_duration = word_tuple[2]/weighted_sum * duration
 			word_array[i] = word_tuple + (word_duration,)
 
-		if syllable_sum == 0:
-			continue
-		print word_array
-		print weighted_sum
-		break
-		#total weighted score
-
-		syl_interval = duration/syllable_sum
 		syl_curr_count = 0
 		time_curr = time_interval[0]
-		# word_end = time_curr
 
 		word_end = time_curr
 		for i in range(0,len(word_array)):
 			w = word_array[i]
 			
 			word_start = word_end
-
-			syl_curr_count += w[1]
-			added_time_intervals = syl_curr_count * syl_interval
-			
-			#this if it is normalized
-			word_end = add_time(time_interval[0], added_time_intervals)
-
-			# print w
-			# print "syl sum: ", syllable_sum
-			# print "syl_curr_count: ", syl_curr_count
-			# print "interval size: ", syl_interval
-			# print "added time intervals: ", added_time_intervals
-			# print "wordstart: ", word_start
-			# print "word end: ", word_end		
+			#add the word_duration of each word
+			word_duration_i = word_array[i][3]
+			word_end = add_time(word_start,word_duration_i)
+			word_position_normalized = (get_duration([time_interval[0], word_start]))/weighted_sum
 
 			word = w[0]
 			word_array[i] = (word, word_start, word_end, w[1])
-			
-			# print len(memo.keys())
-
-			# if word == "nutcase":
-			# 	print time_interval[0]
-			# 	print word_start, word_end
-			# 	return
-
+			# print word_array[i]
 			if word in memo:
-				# print word
 				temp_array = memo[word]
-				temp_array.append((word_start,word_end))
-				# print temp_array
-				# break
+				temp_array.append((word_start,word_end,word_position_normalized))
+				temp_array = sorted(temp_array, key = lambda x: x[2],reverse = True)
+
 				temp_array_2 = copy.deepcopy(temp_array)
 				memo[word] = temp_array
 			else:
-				memo[word] = [(word_start,word_end)]
+				memo[word] = [(word_start,word_end,word_position_normalized)]
 
-
-		# print memo
-		# print time_interval, duration, word_array, syllable_sum
-	# print memo
 	return
 
-memo = {}
-onboard("FightClub/FightClub.srt","FightClub/FightClub.mp4",memo)
 
-output = open('output_memo.txt', 'ab+')
-data = {'a': [1, 2, 3],}
 
-pickle.dump(memo, output)
-output.close()
+def init(input_videos_txt):
+	movie_list_file = open('input_videos.txt','r')
+	data = movie_list_file.read()
+
+	memo = {}
+
+	for a in data.split('\n\n'):
+		subtitle_path,video_path = a.split('\n')
+		onboard(subtitle_path,video_path)
+		print video_path + " ----- done"
+		# onboard("/Users/yishh/Documents/VuzeDownloads/FightClub/FightClub.srt","/Users/yishh/Documents/VuzeDownloads/FightClub/FightClub.mp4",memo)
+		# onboard("/Users/yishh/Documents/VuzeDownloads/pocahontas/pocahontas.srt","/Users/yishh/Documents/VuzeDownloads/pocahontas/pocahontas.srt",memo)
+	try:
+		os.remove('output_memo.txt')
+	except:
+		pass
+
+	output = open('output_memo.txt', 'ab+')
+	pickle.dump(memo, output)
+	output.close()
+
+init('input_videos.txt')
 
 # read data
 # output = open('output.txt', 'rb')
