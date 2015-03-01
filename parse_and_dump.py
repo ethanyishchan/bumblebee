@@ -10,8 +10,6 @@ import datetime as wtf_time
 import math
 import os
 
-# import Cpickle as pickle
-
 #global dick
 d = cmudict.dict()
 def nsyl(word):
@@ -56,9 +54,11 @@ def weighting_function(n,k=0.00):
 	return n * (1 - math.pow(k,(1/n)))
 
 # print weighting_function(0.05,4)
+def parse_movieid (s):
+	return s.split('.')[0].split('/')[-1]
 
 def onboard(f_sub_name, f_mov_name, memo={}):
-
+	movie_id = parse_movieid(f_mov_name)
 	f = open (f_sub_name,'r')
 	data = f.read()
 	for a in data.split("\r\n\r\n")[1:]:
@@ -113,15 +113,17 @@ def onboard(f_sub_name, f_mov_name, memo={}):
 			word = w[0]
 			word_array[i] = (word, word_start, word_end, w[1])
 			# print word_array[i]
+
+			# hash_word = word + "_" + movie_id
 			if word in memo:
 				temp_array = memo[word]
-				temp_array.append((word_start,word_end,word_position_normalized))
+				temp_array.append((word_start,word_end,word_position_normalized,movie_id))
 				temp_array = sorted(temp_array, key = lambda x: x[2],reverse = True)
-
+				# print temp_array
 				temp_array_2 = copy.deepcopy(temp_array)
 				memo[word] = temp_array
 			else:
-				memo[word] = [(word_start,word_end,word_position_normalized)]
+				memo[word] = [(word_start,word_end,word_position_normalized,movie_id)]
 
 	return
 
@@ -135,7 +137,7 @@ def init(input_videos_txt):
 
 	for a in data.split('\n\n'):
 		subtitle_path,video_path = a.split('\n')
-		onboard(subtitle_path,video_path)
+		onboard(subtitle_path,video_path,memo)
 		print video_path + " ----- done"
 		# onboard("/Users/yishh/Documents/VuzeDownloads/FightClub/FightClub.srt","/Users/yishh/Documents/VuzeDownloads/FightClub/FightClub.mp4",memo)
 		# onboard("/Users/yishh/Documents/VuzeDownloads/pocahontas/pocahontas.srt","/Users/yishh/Documents/VuzeDownloads/pocahontas/pocahontas.srt",memo)
