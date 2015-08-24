@@ -5,6 +5,9 @@ import shlex
 import os
 import shutil
 
+import pysrt
+# import datetime as wtf_time
+
 
 
 # read data
@@ -22,6 +25,7 @@ def return_intervals(s):
 	for w in s:
 		word = w[0]
 		if word in memo:
+			print "word here fuck: ",word
 			rank = w[1]
 			try:
 				#append the word and its 
@@ -54,6 +58,19 @@ def get_duration(time_interval):
 	FMT = '%H:%M:%S.%f'
 	tdelta = datetime.strptime(end, FMT) - datetime.strptime(start, FMT)
 	return tdelta.total_seconds()
+
+def gen_srt(scenes):
+	f_name = "output/final_subtitle.srt"
+	open(f_name, 'w')
+	start_time = 0
+	subs = []
+	i = 0
+	for text, video_duration in scenes:
+		subs.append(pysrt.srtitem.SubRipItem(index=i, start= pysrt.srttime.SubRipTime(0, 0, start_time, 0), end=pysrt.srttime.SubRipTime(0, 0, start_time+video_duration, 0), text=text))
+		start_time += video_duration
+		i += 1
+	sub_file = pysrt.srtfile.SubRipFile(items=subs)
+	sub_file.save(f_name)
 
 def splice_move (a):
 	try:
@@ -107,7 +124,7 @@ def splice_move (a):
 	f_name_file.write(("\n").join(fnamelist))
 	# print fnamelist
 	f_name_file.close() 
-
+  
 	try:
 		os.remove("output/concat_output.mp4")
 	except:
@@ -117,20 +134,32 @@ def splice_move (a):
 
 	# ffmpeg -i video.avi -vf subtitles=subtitle.srt out.avi
 	#1) get subtitles
+	gen_srt(word_duration_array)
 
-
+	try:
+		os.remove("static/concat_output_with_subs.mp4")
+	except:
+		pass
 	#2) merge them
-	# ffmpeg -i infile.mp4 -f srt -i infile.srt -c:v copy -c:a copy \
-  	#-c:s mov_text outfile.mp4
+	# sub_merge = "/usr/local/bin/ffmpeg -i output/concat_output.mp4 -f srt -i output/final_subtitle.srt -c:v copy -c:a copy -c:s mov_text output/concat_output_with_subs.mp4"
+	sub_merge = "/usr/local/bin/ffmpeg -i output/concat_output.mp4 -vf subtitles=output/final_subtitle.srt static/concat_output_with_subs.mp4"
+
+  	#ffmpeg -i video.avi -vf subtitles=subtitle.srt out.avi
+  	subprocess.call(sub_merge, shell = True)
 
 
 	# subprocess.call("sleep -500", shell = True)
 	# open vlc player
 	# subprocess.call("/Applications/VLC.app/Contents/MacOS/VLC output/concat_output.mp4", shell = True)
+ 
+
+  
+ 
+    
 
 def string_parser(s_array):
 	result = []
-	for s in s_array:
+	for s in s_array.split(" "):
 		result.append((s,0))
 	return result
 
@@ -138,16 +167,19 @@ def string_parser(s_array):
 def wrapper_main(s):
 
 	parsed_s = string_parser(s)
-	array = return_intervals(s)
-	print array 
+	print parsed_s, "FUASDUIFHIULASHFILUSHAD fuck"
+	print " "
+	array = return_intervals(parsed_s)
+	print "array: " , array 
 	# movie_id = return_movie_id(s)
 	# print movie_id
 	# file_path = "/Users/yishh/Documents/VuzeDownloads/" + movie_id + "/" + movie_id + ".mp4"
+	print "commencing splicing"
 	splice_move(array)
 
-# s = "welcome to hack illinois"
-s = [("hello",0),("how",0),("are",0),("you",0),("demolition",0),("terrorist",0),("fight",1),("anchor",0),("headmaster",0)]
+# # s = "welcome to hack illinois"
+# s = [("hello",0),("demolition",0),("terrorist",0),("fight",1),("anchor",0),("headmaster",0)]
 
-wrapper_main(s)
+# wrapper_main(s)
 # wrapper_main(s,"/Users/yishh/Documents/VuzeDownloads/FightClub/FightClub.mp4")
 # wrapper_main(s,"/Users/yishh/Documents/VuzeDownloads/pocahontas/pocahontas.mp4")

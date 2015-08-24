@@ -80,6 +80,8 @@ def onboard(f_sub_name, f_mov_name, memo={}):
 		syllable_sum = 0
 		word_array = []
 		split_phrase = phrase.split(" ")
+
+		flag_inner = 0
 		for w in split_phrase:
 			try:
 				temp_syllable = nsyl(w)[0]
@@ -89,8 +91,13 @@ def onboard(f_sub_name, f_mov_name, memo={}):
 				syllable_sum += temp_syllable
 				weighted_sum += weighted_syllable
 			except:
-				continue
-		
+				flag_inner = 1
+				break
+
+		if flag_inner ==1:
+			continue
+
+
 		#calculate the normalized weight, including the function
 		for i in range (0,len(word_array)):
 			word_tuple = word_array[i]
@@ -109,7 +116,7 @@ def onboard(f_sub_name, f_mov_name, memo={}):
 			word_duration_i = word_array[i][3]
 			word_end = add_time(word_start,word_duration_i)
 			word_position_normalized = (get_duration([time_interval[0], word_start]))/weighted_sum
-
+ 			
 			word = w[0]
 			word_array[i] = (word, word_start, word_end, w[1])
 			# print word_array[i]
@@ -127,7 +134,7 @@ def onboard(f_sub_name, f_mov_name, memo={}):
 
 	return
 
-
+   
 
 def init(input_videos_txt):
 	movie_list_file = open('input_videos.txt','r')
@@ -149,12 +156,8 @@ def init(input_videos_txt):
 	output = open('output_memo.txt', 'ab+')
 	pickle.dump(memo, output)
 	output.close()
+	print "done initializing output file"
 
-init('input_videos.txt')
+# init('input_videos.txt')
 
-# read data
-# output = open('output.txt', 'rb')
-# obj_dict = pickle.load(output)
-
-# print memo
 

@@ -1,0 +1,22 @@
+1
+
+import pickle	
+output = open('output_memo.txt', 'rb')
+memo = pickle.load(output)
+output.close()
+
+def delete_word(w):
+	temp_array = memo[w]
+	temp_array= sorted(temp_array, key = lambda x: x[2],reverse = True)[1:]
+	memo[w] = temp_array
+	output1 = open('output_memo.txt','wb')
+	pickle.dump(memo,output1)
+	output1.close()
+
+
+
+
+delete_word("")
+output1 = open('output_memo.txt','wb')
+pickle.dump(memo,output1)
+output1.close()
