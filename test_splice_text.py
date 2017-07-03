@@ -155,7 +155,7 @@ def splice_move (a):
 
   
  
-    
+    	
 
 def string_parser(s_array):
 	result = []
@@ -167,7 +167,7 @@ def string_parser(s_array):
 def wrapper_main(s):
 
 	parsed_s = string_parser(s)
-	print parsed_s, "FUASDUIFHIULASHFILUSHAD fuck"
+	print parsed_s, "FUASDUIFHIULASHFILUSHAD"
 	print " "
 	array = return_intervals(parsed_s)
 	print "array: " , array 

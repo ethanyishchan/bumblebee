@@ -134,7 +134,86 @@ def onboard(f_sub_name, f_mov_name, memo={}):
 
 	return
 
-   
+
+#goal: need some sort of framework to align audio and video
+#
+
+def onboard_phonemes(f_sub_name, f_mov_name, memo={}):
+	movie_id = parse_movieid(f_mov_name)
+	f = open (f_sub_name,'r')
+	data = f.read()
+	for a in data.split("\r\n\r\n")[1:]:
+		if len(a) == 0:
+			return
+		b = a.split("\r\n")
+
+		phrase = ""
+		for i in range (2,len(b)):
+			phrase += " " + b[i]
+		try:
+			time_interval = parse_interval(b[1])
+		except:
+			continue
+		duration = get_duration(time_interval)
+		phrase = get_language_text(phrase)
+
+		weighted_sum = 0
+		syllable_sum = 0
+		word_array = []
+		split_phrase = phrase.split(" ")
+
+		flag_inner = 0
+		for w in split_phrase:
+			try:
+				temp_syllable = nsyl(w)[0]
+				#weighting function goes in here
+				weighted_syllable = weighting_function(temp_syllable)
+				word_array.append((w,temp_syllable,weighted_syllable))
+				syllable_sum += temp_syllable
+				weighted_sum += weighted_syllable
+			except:
+				flag_inner = 1
+				break
+
+		if flag_inner ==1:
+			continue
+
+
+		#calculate the normalized weight, including the function
+		for i in range (0,len(word_array)):
+			word_tuple = word_array[i]
+			word_duration = word_tuple[2]/weighted_sum * duration
+			word_array[i] = word_tuple + (word_duration,)
+
+		syl_curr_count = 0
+		time_curr = time_interval[0]
+
+		word_end = time_curr
+		for i in range(0,len(word_array)):
+			w = word_array[i]
+			
+			word_start = word_end
+			#add the word_duration of each word
+			word_duration_i = word_array[i][3]
+			word_end = add_time(word_start,word_duration_i)
+			word_position_normalized = (get_duration([time_interval[0], word_start]))/weighted_sum
+ 			
+			word = w[0]
+			word_array[i] = (word, word_start, word_end, w[1])
+			# print word_array[i]
+
+			# hash_word = word + "_" + movie_id
+			if word in memo:
+				temp_array = memo[word]
+				temp_array.append((word_start,word_end,word_position_normalized,movie_id))
+				temp_array = sorted(temp_array, key = lambda x: x[2],reverse = True)
+				# print temp_array
+				temp_array_2 = copy.deepcopy(temp_array)
+				memo[word] = temp_array
+			else:
+				memo[word] = [(word_start,word_end,word_position_normalized,movie_id)]
+
+	return
 
 def init(input_videos_txt):
 	movie_list_file = open('input_videos.txt','r')

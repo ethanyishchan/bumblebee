@@ -10,14 +10,8 @@
 /Users/yishh/Documents/VuzeDownloads/dallas_buyers_club/dallas_buyers_club.srt
 /Users/yishh/Documents/VuzeDownloads/dallas_buyers_club/dallas_buyers_club.mp4
 
-/Users/yishh/Documents/VuzeDownloads/fury/fury.srt
-/Users/yishh/Documents/VuzeDownloads/fury/fury.mp4
-
 /Users/yishh/Documents/VuzeDownloads/lego_movie/lego_movie.srt
 /Users/yishh/Documents/VuzeDownloads/lego_movie/lego_movie.mp4
-
-/Users/yishh/Documents/VuzeDownloads/revenge_of_the_sith/revenge_of_the_sith.srt
-/Users/yishh/Documents/VuzeDownloads/revenge_of_the_sith/revenge_of_the_sith.mp4
 
 /Users/yishh/Documents/VuzeDownloads/minority_report/minority_report.srt
 /Users/yishh/Documents/VuzeDownloads/minority_report/minority_report.mp4
@@ -27,9 +21,6 @@
 
 /Users/yishh/Documents/VuzeDownloads/dead_poets_society/dead_poets_society.srt
 /Users/yishh/Documents/VuzeDownloads/dead_poets_society/dead_poets_society.mp4
-
-/Users/yishh/Documents/VuzeDownloads/city_of_god/city_of_god.srt
-/Users/yishh/Documents/VuzeDownloads/city_of_god/city_of_god.mp4
 
 /Users/yishh/Documents/VuzeDownloads/FightClub/FightClub.srt
 /Users/yishh/Documents/VuzeDownloads/FightClub/FightClub.mp4
