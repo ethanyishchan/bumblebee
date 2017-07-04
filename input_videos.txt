@@ -1,5 +1,14 @@
-/Users/yishh/Documents/VuzeDownloads/lincoln/lincoln.srt
-/Users/yishh/Documents/VuzeDownloads/lincoln/lincoln.mp4
+/Users/yishh/Documents/VuzeDownloads/interstellar/interstellar.srt
+/Users/yishh/Documents/VuzeDownloads/interstellar/interstellar.mp4
+
+/Users/yishh/Documents/VuzeDownloads/man_of_steel/man_of_steel.srt
+/Users/yishh/Documents/VuzeDownloads/man_of_steel/man_of_steel.mp4
+
+/Users/yishh/Documents/VuzeDownloads/the_dark_knight/the_dark_knight.srt
+/Users/yishh/Documents/VuzeDownloads/the_dark_knight/the_dark_knight.mp4
+
+/Users/yishh/Documents/VuzeDownloads/fantastic_mr_fox/fantastic_mr_fox.srt
+/Users/yishh/Documents/VuzeDownloads/fantastic_mr_fox/fantastic_mr_fox.mp4
 
 /Users/yishh/Documents/VuzeDownloads/whiplash/whiplash.srt
 /Users/yishh/Documents/VuzeDownloads/whiplash/whiplash.mp4
@@ -13,20 +22,11 @@
 /Users/yishh/Documents/VuzeDownloads/lego_movie/lego_movie.srt
 /Users/yishh/Documents/VuzeDownloads/lego_movie/lego_movie.mp4
 
-/Users/yishh/Documents/VuzeDownloads/minority_report/minority_report.srt
-/Users/yishh/Documents/VuzeDownloads/minority_report/minority_report.mp4
-
 /Users/yishh/Documents/VuzeDownloads/boyhood/boyhood.srt
 /Users/yishh/Documents/VuzeDownloads/boyhood/boyhood.mp4
 
 /Users/yishh/Documents/VuzeDownloads/dead_poets_society/dead_poets_society.srt
 /Users/yishh/Documents/VuzeDownloads/dead_poets_society/dead_poets_society.mp4
 
-/Users/yishh/Documents/VuzeDownloads/FightClub/FightClub.srt
-/Users/yishh/Documents/VuzeDownloads/FightClub/FightClub.mp4
-
 /Users/yishh/Documents/VuzeDownloads/pocahontas/pocahontas.srt
 /Users/yishh/Documents/VuzeDownloads/pocahontas/pocahontas.mp4
-
-/Users/yishh/Documents/VuzeDownloads/die_another_day/die_another_day.srt
-/Users/yishh/Documents/VuzeDownloads/die_another_day/die_another_day.mp4

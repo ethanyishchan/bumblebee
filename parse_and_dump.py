@@ -216,19 +216,18 @@ def onboard_phonemes(f_sub_name, f_mov_name, memo={}):
 	return
 
 def init(input_videos_txt):
-	movie_list_file = open('input_videos.txt','r')
+	movie_list_file = open(input_videos_txt,'r')
 	data = movie_list_file.read()
 
 	memo = {}
-
+	print "initializing.. "
 	for a in data.split('\n\n'):
 		subtitle_path,video_path = a.split('\n')
 		onboard(subtitle_path,video_path,memo)
-		print video_path + " ----- done"
-		# onboard("/Users/yishh/Documents/VuzeDownloads/FightClub/FightClub.srt","/Users/yishh/Documents/VuzeDownloads/FightClub/FightClub.mp4",memo)
-		# onboard("/Users/yishh/Documents/VuzeDownloads/pocahontas/pocahontas.srt","/Users/yishh/Documents/VuzeDownloads/pocahontas/pocahontas.srt",memo)
+		print video_path + " ----- done ----- "
 	try:
 		os.remove('output_memo.txt')
+		print "removed old output"
 	except:
 		pass
 

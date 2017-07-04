@@ -25,7 +25,7 @@ def return_intervals(s):
 	for w in s:
 		word = w[0]
 		if word in memo:
-			print "word here fuck: ",word
+			print "WORD: ", word
 			rank = w[1]
 			try:
 				#append the word and its 
@@ -167,7 +167,7 @@ def string_parser(s_array):
 def wrapper_main(s):
 
 	parsed_s = string_parser(s)
-	print parsed_s, "FUASDUIFHIULASHFILUSHAD"
+	print parsed_s, "<< Parsed"
 	print " "
 	array = return_intervals(parsed_s)
 	print "array: " , array 
